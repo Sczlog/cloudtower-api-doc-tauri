@@ -1,4 +1,5 @@
 import { List, Map as IMap } from "immutable";
+import { OpenAPIV3 } from 'openapi-types';
 import i18next from '../i18n';
 import swaggerSpec1_8 from "../specs/v1.8.0-swagger.json";
 import swaggerSpec1_9 from '../specs/v1.9.0-swagger.json';
@@ -41,65 +42,7 @@ export interface Schema {
     }
   >;
 }
-export interface ISpec {
-  components: {
-    schemas: Record<string, Schema>;
-    securitySchemes: Record<
-      string,
-      {
-        type: string;
-        name: string;
-        in: "header";
-        description: string;
-      }
-    >;
-  };
-  paths: Record<
-    string,
-    {
-      post: {
-        tags: string[];
-        description: string;
-        parameters?: {
-          name: string;
-          in: string;
-          description: string;
-        }[];
-        responses: {
-          200: {
-            content: {
-              "application/json": {
-                schema: {
-                  items?: {
-                    $ref?: string;
-                    properties?: {
-                      data?: {
-                        allOf?: [{ $ref?: string }];
-                      };
-                    };
-                  };
-                  $ref?: string;
-                };
-              };
-            };
-          };
-        };
-        requestBody: {
-          content: {
-            "application/json"?: {
-              schema: {
-                $ref?: string;
-                items?: {
-                  $ref?: string;
-                };
-              };
-            };
-          };
-        };
-      };
-    }
-  >;
-}
+export type ISpec = OpenAPIV3.Document
 
 type SwaggerComponent = React.FC<{
   className?: string;
@@ -125,6 +68,7 @@ export interface CommonSwaggerProps {
   specSelectors: {
     url: () => string;
     loadingStatus: () => string;
+    taggedOperations: () => IMap<string, object>
     isSwagger2: () => boolean;
     isOAS3: () => boolean;
     servers: () => List<IMap<string, string>>;
